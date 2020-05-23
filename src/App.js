@@ -27,7 +27,7 @@ function App() {
     axios.delete(`https://b54a2pst5h.execute-api.eu-west-1.amazonaws.com/dev/tasks/${id}`)
       .then(response => {
         const filteredTasks = tasks.filter(task => {
-          return task.TaskId !== id;
+          return task.taskID !== id;
         });
         setTasks(filteredTasks);
       })
@@ -47,7 +47,7 @@ function App() {
       )
       .then((response) => {
         const newTasks = tasks.map((task) => {
-          if (task.taskId === id) {
+          if (task.taskID === id) {
             task.completed = 1;
           }
           return task;
