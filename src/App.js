@@ -1,75 +1,90 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import './App.css';
 import Header from "./Header/Header";
 import AddNewTask from "./AddNewTask/AddNewTask";
 import Task from "./Task/Task"
 import TaskCount from "./TaskCount/TaskCount"
+import axios from "axios";
 
 
 
 function App() {
-  const [tasks, setTasks] = useState([
-    {
-      text: "Go for a walk",
-      completed: true,
-      dueDate: "2020-04-10",
-      urgent: false,
-      id: 1
-    },
-    {
-      text: "Cook dinner",
-      completed: false,
-      dueDate: "2020-04-10",
-      urgent: true,
-      id: 2
-    },
-
-    {
-      text: "Study Java Script",
-      completed: true,
-      dueDate: "2020-04-10",
-      urgent: false,
-      id: 3
-    },
-    {
-      text: "Walk the dog",
-      completed: false,
-      dueDate: "2020-04-10",
-      urgent: false,
-      id: 4
-    }
-  ]);
-    const deleteTask = id => {
-    const filteredTasks = tasks.filter(task => {
-      return task.id !== id;
-    });
-    setTasks(filteredTasks);
-  };
-    const markTaskComplete = (id) => {
-      const newTasks = tasks.map(task => {
-        if (task.id === id) {
-          task.completed = true;
-        }
-        return task;
+  const [tasks, setTasks] = useState([]);
+  useEffect(() => {
+    axios.get("https://b54a2pst5h.execute-api.eu-west-1.amazonaws.com/dev/tasks")
+      .then(response => {
+        console.log("Success", response.data);
+        setTasks(response.data);
+      })
+      .catch(err => {
+        console.log("Error", err);
       });
-      setTasks(newTasks);
-    }
-    const addNewTask = (text, date, urgent) => {
-      const newTask = {
-        text: text,
-        dueDate: date,
-        urgent: urgent,
-        completed: false,
-        id: Math.random() * 1000,
-      };
-      const newTasks = [...tasks, newTask];
-      setTasks(newTasks);
-    }
-  
+  }, []);
+
+
+
+  const deleteTask = id => {
+    axios.delete(`https://b54a2pst5h.execute-api.eu-west-1.amazonaws.com/dev/tasks/${id}`)
+      .then(response => {
+        const filteredTasks = tasks.filter(task => {
+          return task.TaskId !== id;
+        });
+        setTasks(filteredTasks);
+      })
+      .catch(err => {
+        console.log("API Error", err);
+      });
+  };
+
+
+  const markTaskComplete = (id) => {
+    axios
+      .put(
+
+        `https://b54a2pst5h.execute-api.eu-west-1.amazonaws.com/dev/tasks//${id}`, {
+        Completed: true
+      }
+      )
+      .then((response) => {
+        const newTasks = tasks.map((task) => {
+          if (task.taskId === id) {
+            task.completed = 1;
+          }
+          return task;
+        });
+        setTasks(newTasks);
+      })
+      .catch((err) => {
+        console.log("Error updating Task", err);
+      });
+  }
+
+  const addNewTask = (narrative, date, urgency) => {
+
+
+    axios.post("https://b54a2pst5h.execute-api.eu-west-1.amazonaws.com/dev/tasks", {
+
+      narrative: narrative,
+
+      date: date,
+
+      urgency: urgency
+
+    })
+
+      .then(response => {
+        const newTask = response.data;
+        const newTasks = [...tasks, newTask];
+        setTasks(newTasks);
+      })
+      .catch(err => {
+        console.log("Error creating task", err);
+      });
+  }
 
   return (
     <div className="App">
-      <Header/>
+      <Header />
       <main>
         <TaskCount count={tasks.length} />
         <div className="container">
@@ -79,21 +94,21 @@ function App() {
 
               <Task
 
-               key={task.id}
+                key={task.id}
 
                 deleteTaskFunc={deleteTask}
 
                 markCompleteFunc={markTaskComplete}
 
-                text={task.text}
+                text={task.narrative}
 
-                urgent={task.urgent}
+                urgent={task.urgency}
 
                 completed={task.completed}
 
-                dueDate={task.dueDate}
+                date={task.date}
 
-                id={task.id}
+                id={task.taskID}
 
               />
 

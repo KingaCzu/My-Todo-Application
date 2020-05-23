@@ -31,7 +31,7 @@ const Task = props => {
 
       <div className="col-6 col-md-2">
 
-        {props.urgent === true ? "CRITICAL" : ""}
+        {props.urgent === 1 ? "CRITICAL" : ""}
 
       </div>
 
@@ -39,7 +39,7 @@ const Task = props => {
 
       <div className="col-6 col-md-2">
 
-        {props.completed === false && (
+        {props.completed === 0 && (
 
           <button className="btn btn-success" onClick={handleCompleteClick}>
 
