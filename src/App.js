@@ -42,7 +42,7 @@ function App() {
       .put(
 
         `https://b54a2pst5h.execute-api.eu-west-1.amazonaws.com/dev/tasks//${id}`, {
-        Completed: true
+        completed: true
       }
       )
       .then((response) => {
@@ -59,18 +59,18 @@ function App() {
       });
   }
 
-  const addNewTask = (narrative, date, urgency) => {
+  const addNewTask = (text, date, urgent) => {
 
 
     axios.post("https://b54a2pst5h.execute-api.eu-west-1.amazonaws.com/dev/tasks", {
 
-      narrative: narrative,
+      narrative: text,
 
       date: date,
 
-      urgency: urgency
+      urgency: urgent,
 
-    })
+      })
 
       .then(response => {
         const newTask = response.data;
@@ -94,7 +94,7 @@ function App() {
 
               <Task
 
-                key={task.id}
+                key={task.taskID}
 
                 deleteTaskFunc={deleteTask}
 
