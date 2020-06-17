@@ -59,7 +59,7 @@ function App() {
       });
   }
 
-  const addNewTask = (text, date, urgent) => {
+  const addNewTask = (text, date, urgent) => { 
 
 
     axios.post("https://b54a2pst5h.execute-api.eu-west-1.amazonaws.com/dev/tasks", {
@@ -69,6 +69,8 @@ function App() {
       date: date,
 
       urgency: urgent,
+
+      userID: 1
 
       })
 
